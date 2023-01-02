@@ -31,7 +31,7 @@ public class MainControler {
 	@GetMapping("/scrapper")
 	private void startScrapping() throws IOException, InterruptedException {
 		log.info("Scrapper Starting");
-//		dataScrapper.startScrapping();
+		dataScrapper.startScrapping();
 		bc.startBusinessScrapping();
 	}
 }
