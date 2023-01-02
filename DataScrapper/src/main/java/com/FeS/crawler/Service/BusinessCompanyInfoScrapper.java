@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -26,12 +28,12 @@ import lombok.extern.slf4j.Slf4j;
 public class BusinessCompanyInfoScrapper extends AbstractScraper{
 
 
-	private static final String keyword = "school in Vatara";
+	private static final String keyword = "Business Company in Banani";
 	private static final String URL = "https://www.google.com/search" + "?q=" + keyword;
 	private static final String notAvailable = "is not available";
 	private static ChromeDriver driver;
 
-	public void startScrapping() throws IOException, InterruptedException {
+	public void startBusinessScrapping() throws IOException, InterruptedException {
 		driver = getChromeDriver();
 		DevTools devTools = driver.getDevTools();
 		devTools.createSession();
@@ -173,7 +175,7 @@ public class BusinessCompanyInfoScrapper extends AbstractScraper{
 				}
 
 				if (isPhoneNumber(phone1)) {
-					schoolInfo.setPhoneNumber(phone1);
+					schoolInfo.setPhoneNumber(trimNumber(phone1));
 				}
 
 				if (isPhoneNumber(phone2)) {
@@ -205,7 +207,12 @@ public class BusinessCompanyInfoScrapper extends AbstractScraper{
 
 		log.info(list.toString());
 		FileExport.ExportFiletoExcell(keyword + convertLocalDateTimeToString(LocalDateTime.now()), list);
+		devTools.disconnectSession();
 		driver.close();
+	}
+
+	private String trimNumber(String phone) {
+		return phone.replaceAll("[^0-9]", "").toString().trim();
 	}
 
 	private boolean isPhoneNumber(String data) {

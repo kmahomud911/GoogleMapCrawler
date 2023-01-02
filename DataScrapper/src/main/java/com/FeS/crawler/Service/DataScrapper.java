@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -27,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DataScrapper extends AbstractScraper {
 
-	private static final String keyword = "school in Vatara";
+	private static final String keyword = "school in Badda";
 	private static final String URL = "https://www.google.com/search" + "?q=" + keyword;
 	private static final String notAvailable = "is not available";
 	private static ChromeDriver driver;
@@ -174,19 +175,19 @@ public class DataScrapper extends AbstractScraper {
 				}
 
 				if (isPhoneNumber(phone1)) {
-					schoolInfo.setPhoneNumber(phone1);
+					schoolInfo.setPhoneNumber(trimNumber(phone1));
 				}
 
 				if (isPhoneNumber(phone2)) {
-					schoolInfo.setPhoneNumber(phone2);
+					schoolInfo.setPhoneNumber(trimNumber(phone2));
 				}
 
 				if (isPhoneNumber(website1)) {
-					schoolInfo.setPhoneNumber(website1);
+					schoolInfo.setPhoneNumber(trimNumber(website1));
 				}
 
 				if (isPhoneNumber(website2)) {
-					schoolInfo.setPhoneNumber(website2);
+					schoolInfo.setPhoneNumber(trimNumber(website2));
 				}
 			}
 
@@ -195,10 +196,10 @@ public class DataScrapper extends AbstractScraper {
 					schoolInfo.setWebsite(website3);
 				}
 				if (isPhoneNumber(website3)) {
-					schoolInfo.setPhoneNumber(website3);
+					schoolInfo.setPhoneNumber(trimNumber(website3));
 				}
 				if (isPhoneNumber(phone3)) {
-					schoolInfo.setPhoneNumber(phone3);
+					schoolInfo.setPhoneNumber(trimNumber(phone3));
 				}
 			}
 			list.add(schoolInfo);
@@ -206,6 +207,7 @@ public class DataScrapper extends AbstractScraper {
 
 		log.info(list.toString());
 		FileExport.ExportFiletoExcell(keyword + convertLocalDateTimeToString(LocalDateTime.now()), list);
+		devTools.disconnectSession();
 		driver.close();
 	}
 
@@ -293,5 +295,10 @@ public class DataScrapper extends AbstractScraper {
 	private String convertLocalDateTimeToString(LocalDateTime localDateTime) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 		return localDateTime.format(formatter); // "1986-04-08 12:30"
+	}
+	
+	private String trimNumber(String phone) {
+		return phone.replaceAll("[^0-9]", "").toString().trim();
+		
 	}
 }
