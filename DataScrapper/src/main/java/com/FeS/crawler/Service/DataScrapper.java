@@ -15,6 +15,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.v106.emulation.Emulation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.FeS.crawler.Model.SchoolInfo;
@@ -32,6 +33,9 @@ public class DataScrapper extends AbstractScraper {
 	private static final String URL = "https://www.google.com/search" + "?q=" + keyword;
 	private static final String notAvailable = "is not available";
 	private static ChromeDriver driver;
+	
+	@Autowired
+	private SchoolRepo repo;
 
 	public void startScrapping() throws IOException, InterruptedException {
 		driver = getChromeDriver();
@@ -209,6 +213,7 @@ public class DataScrapper extends AbstractScraper {
 		FileExport.ExportFiletoExcell(keyword + convertLocalDateTimeToString(LocalDateTime.now()), list);
 		devTools.disconnectSession();
 		driver.close();
+		repo.saveAll(list);
 	}
 
 	private boolean isPhoneNumber(String data) {
